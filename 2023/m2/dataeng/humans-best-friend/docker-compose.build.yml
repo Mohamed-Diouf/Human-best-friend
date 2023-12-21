@@ -1,0 +1,35 @@
+services:
+  worker:
+    build:
+      context: ./worker
+  vote:
+    build:
+      context: ./vote
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  seed-data:
+    build:
+      context: ./seed-data
+    restart: "no"
+
+  result:
+    build:
+      context: ./result
+
+  db:
+    image: postgres:15-alpine
+    healthcheck:
+      test: /healthchecks/postgres.sh
+      interval: "5s"
+
+  redis:
+    image: redis
+    healthcheck:
+      test: /healthchecks/redis.sh
+      interval: "5s"
+
